@@ -1,12 +1,8 @@
-/// Use an efficient WASM allocator.
-#[global_allocator]
-static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
-
+/// Use an efficient WASM allocator
 use core::marker::PhantomData;
 use alloc::{string::String, vec::Vec};
 /// Import items from the SDK. The prelude contains common traits and macros.
 use stylus_sdk::{
-    alloy_primitives::{Address},
     alloy_sol_types::sol,
     prelude::*
 };
@@ -16,7 +12,7 @@ sol! {
 }
 
 pub trait AuctionParams {
-    const OWNER: Address;
+    const OWNER: &'static str;
 }
 
 // Define some persistent storage using the Solidity ABI.
@@ -53,7 +49,7 @@ impl<T: AuctionParams> AuctionContract<T> {}
 #[external]
 impl<T: AuctionParams> AuctionContract<T> {
     /// Gets the number from storage.
-    pub fn owner(&self) -> Result<Address, AuctionError> {
-        Ok(T::OWNER)
+    pub fn owner(&self) -> Result<String, Vec<u8>> {
+        Ok(T::OWNER.into())
     }
 }

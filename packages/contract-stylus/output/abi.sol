@@ -3,8 +3,10 @@
  * For more information, please see [The Stylus SDK](https://github.com/OffchainLabs/stylus-sdk-rs).
  */
 
-interface ICounter {
-    function number() external view returns (uint256);
+interface IAuctionContract {
+    function owner() external view returns (string memory);
+}
 
-    function setNumber(uint256 new_number) external;
+interface IUranus is IAuctionContract {
+    function setAsset(address _asset) external returns (address);
 }
