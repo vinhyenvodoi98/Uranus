@@ -14,7 +14,7 @@ const { chains, publicClient } = configureChains(
       rpc: (chain: any) => {
         if (chain.id === stylusTestnet.id)
           return {
-            http: stylusTestnet.rpcUrls.public.http[0],
+            http: stylusTestnet.rpcUrls.public.http[0] as string,
           };
         return null;
       },
