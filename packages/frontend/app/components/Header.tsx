@@ -1,28 +1,27 @@
-// import Wallet from '@/components/Providers/wallet';
 
+import Link from "next/link";
 import Wallet from "./Wallet";
+import Image from "next/image";
 
 export default function Header() {
   return (
     <header className='sticky top-0 z-50 bg-base-100'>
       <div className='layout flex items-center justify-between'>
-        <div className="navbar bg-base-300 rounded-full m-4 px-6">
-          <div className="navbar-start">
-            <div className="dropdown">
-              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
-              </div>
-              <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a>Homepage</a></li>
-                <li><a>Portfolio</a></li>
-                <li><a>About</a></li>
-              </ul>
-            </div>
+        <div className="navbar bg-base-300 m-4">
+          <div className="flex-1">
+            <Link href={"/"} className="btn btn-ghost text-xl">
+              <Image src={"/uranus-logo.webp"} width={36} height={36} alt="logo"/>
+              Uranus
+            </Link>
+            <label className="input input-bordered flex items-center gap-2">
+              <input type="text" className="grow" placeholder="Search" />
+              <kbd className="kbd kbd-sm">⌘</kbd>
+              <kbd className="kbd kbd-sm">K</kbd>
+            </label>
+            <Link href={"/create"} className="btn btn-ghost text-xl">Create</Link>
+            <Link href={"/explore"} className="btn btn-ghost text-xl">Explore</Link>
           </div>
-          <div className="navbar-center">
-            <a className="btn btn-ghost text-xl">Home</a>
-          </div>
-          <div className="navbar-end">
+          <div className="flex-none gap-2">
             <Wallet />
           </div>
         </div>
