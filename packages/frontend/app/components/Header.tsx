@@ -10,7 +10,7 @@ export default function Header() {
         <div className="navbar bg-base-300 m-4">
           <div className="flex-1">
             <Link href={"/"} className="btn btn-ghost text-xl">
-              <Image src={"/uranus-logo.webp"} width={36} height={36} alt="logo"/>
+              <Image src={"/uranus-logo.webp"} width={36} height={36} alt="logo" style={{borderRadius: "5px"}}/>
               Uranus
             </Link>
             <label className="input input-bordered flex items-center gap-2">
