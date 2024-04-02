@@ -25,7 +25,7 @@ export-abi = ["stylus-sdk/export-abi"]
 debug = ["stylus-sdk/debug"]
 
 [[bin]]
-name = "aution"
+name = "auction"
 path = "src/main.rs"
 
 [lib]

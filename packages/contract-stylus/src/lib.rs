@@ -6,7 +6,6 @@ static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 use crate::auction::{AuctionContract, AuctionParams};
 use stylus_sdk::{
-    alloy_primitives::{Address},
     prelude::*
 };
 
@@ -22,7 +21,7 @@ impl AuctionParams for UranusParams {
 sol_storage! {
     #[entrypoint]
     struct Uranus {
-        address asset;
+        address owner;
         #[borrow] // Allows aution to access Auction's storage and make calls
         AuctionContract<UranusParams> auction;
     }
@@ -31,8 +30,7 @@ sol_storage! {
 #[external]
 #[inherit(AuctionContract<UranusParams>)]
 impl Uranus {
-    pub fn set_asset(&mut self, _asset: Address) -> Result<Address, Vec<u8>> {
-        self.asset.set(_asset);
-        Ok(_asset)
+    pub fn get_owner(&self) -> Result<String, Vec<u8>> {
+        Ok(self.auction.owner()?)
     }
 }
