@@ -4,7 +4,7 @@ export const stylusTestnet = {
   id: 23011913,
   name: "Stylus testnet",
   network: "stylus",
-  iconUrl: "/png/arbitrum.png",
+  iconUrl: "/svg/stylus.svg",
   iconBackground: "#000",
   nativeCurrency: {
     decimals: 18,

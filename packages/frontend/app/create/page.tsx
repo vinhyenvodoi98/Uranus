@@ -1,10 +1,12 @@
 'use client'
 import { useMemo, useState } from "react";
-import { isAddress } from 'viem';
+import { isAddress, parseEther } from 'viem';
 import NFTImage from "../components/NFTImage";
-import { useAccount, useContractReads } from "wagmi";
+import { useAccount, useContractReads, useContractWrite } from "wagmi";
 
 import Erc721Abi from '../../../contract-stylus/output/erc721.json';
+import AuctionAbi from '../../../contract-stylus/output/auction.json';
+import AuctionAddress from '../../../contract-stylus/address.json'
 
 export default function CreatePage() {
   const account = useAccount();
@@ -42,6 +44,12 @@ export default function CreatePage() {
         functionName: 'ownerOf',
         args: [tokenId as any],
       },
+      {
+        address: tokenContract as `0x${string}`,
+        abi: Erc721Abi as any,
+        functionName: 'getApproved',
+        args: [tokenId as any],
+      }
     ],
   });
 
@@ -55,6 +63,73 @@ export default function CreatePage() {
       return true;
     else false;
   }, [token, account]);
+
+  const isApprove = useMemo(() => {
+    if (
+      token &&
+      token[3].result &&
+      (token[3].result.toString().toLocaleLowerCase() as any) ===
+        AuctionAddress.address?.toLocaleLowerCase()
+    )
+      return true;
+    else false;
+  }, [token, AuctionAddress]);
+
+  const isReady = useMemo(() => {
+    if (
+      isOwner &&
+      minBid.length > 0 &&
+      reserverPrice.length > 0
+    )
+      return true;
+    else false;
+  }, [isOwner, minBid, reserverPrice]);
+
+  const {
+    // data: transactionHash,
+    // isLoading: isLoading,
+    // isSuccess: isSuccess,
+    write: triggerApprove
+  } = useContractWrite({
+    address: tokenContract as `0x${string}`,
+    abi: Erc721Abi as any,
+    functionName: 'approve',
+  });
+
+  const approve = () => {
+    triggerApprove({
+      args: [
+        AuctionAddress.address,
+        tokenId,
+      ],
+    });
+  }
+
+  const {
+    data: transactionHash,
+    isLoading: isLoading,
+    isSuccess: isSuccess,
+    write: triggerStartAuction
+  } = useContractWrite({
+    address: AuctionAddress.address as `0x${string}`,
+    abi: AuctionAbi as any,
+    functionName: 'startAuction',
+  });
+
+  const startAuction = () => {
+    let today = new Date()
+    let endTime = new Date(today.setDate(today.getDate() + Number(expirationDate)))
+    triggerStartAuction({
+      args: [
+        tokenContract,
+        tokenId,
+        parseEther(minBid),
+        parseEther(reserverPrice),
+        (today.getTime()-(today.getTime()%1000))/1000,
+        (endTime.getTime()-(endTime.getTime()%1000))/1000,
+      ],
+    });
+  }
 
   return (
     <div className="bg-base-100">
@@ -152,13 +227,24 @@ export default function CreatePage() {
                 <NFTImage token={token as any} />
               </div>
             </div>
-            <button
-              onClick={() =>console.log("create")}
-              disabled={!(isOwner)}
-              className='btn btn-outline rounded-full text-blue-500 hover:bg-blue-500 text-lg w-40'
-            >
-              {isOwner ? 'Create' : 'Not Owner'}
-            </button>
+            {
+              isApprove ?
+                <button
+                  onClick={() => startAuction()}
+                  disabled={!(isReady)}
+                  className='btn btn-outline rounded-sm text-primary hover:bg-primary-500 text-lg w-60'
+                >
+                  {isOwner ? isReady ? 'Start Auction' : 'Not full information' : 'Not Owner'}
+                </button>
+                :
+                <button
+                  onClick={() => approve()}
+                  disabled={!(isOwner)}
+                  className='btn btn-outline rounded-sm text-primary hover:bg-primary-500 text-lg w-60'
+                >
+                  {isOwner ? 'Approve' : 'Not Owner'}
+                </button>
+            }
           </div>
         </div>
       </div>

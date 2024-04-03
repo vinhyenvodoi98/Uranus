@@ -7,8 +7,8 @@ export default function Header() {
   return (
     <header className='sticky top-0 z-50 bg-base-100'>
       <div className='layout flex items-center justify-between'>
-        <div className="navbar bg-base-300 m-4">
-          <div className="flex-1">
+        <div className="navbar bg-base-300 m-4 rounded-lg">
+          <div className="flex-1 gap-4">
             <Link href={"/"} className="btn btn-ghost text-xl">
               <Image src={"/uranus-logo.webp"} width={36} height={36} alt="logo" style={{borderRadius: "5px"}}/>
               Uranus
