@@ -1,0 +1,26 @@
+[33;1mWarning:[0;0m using Rust nightly. Make sure you are aware of the security risks.
+Reading WASM file at [0;0m[90m/Users/do.duc.hoang/Desktop/Hackathon/flamePlace/packages/contract-stylus/target/wasm32-unknown-unknown/release/deps/stylus_hello_world.wasm[0;0m
+Uncompressed WASM size: [38;5;161;1m49.8 KB[0;0m
+Compressed WASM size to be deployed onchain: [38;5;48;1m14.4 KB[0;0m
+Connecting to Stylus RPC endpoint: [38;5;48;1mhttps://stylus-testnet.arbitrum.io/rpc[0;0m
+Program succeeded Stylus onchain activation checks with Stylus version: 1
+Deployer address: [0;0m[90m0x71C66b00f5799026dB8a4873C761Bd7643828e5E[0;0m
+
+[0;0m[90m====DEPLOYMENT====[0;0m
+Deploying program to address [38;5;48;1m0x900F8688696561c7B92f3dACa3403101FD27bf00[0;0m
+Base fee: [0;0m[90m0.100000000[0;0m gwei
+Estimated gas for deployment: [38;5;48;1m19499053[0;0m gas units
+Submitting deployment tx...
+Confirmed deployment tx [38;5;48;1m0x[0;0m[38;5;48;1m1c8a25da77475b998b6612b7b6496397b56197acfcfdb44d91c181ef7fb9e892[0;0m
+Gas units used [38;5;48;1m17843472[0;0m, effective gas price [0;0m[90m0.100000000[0;0m gwei
+Transaction fee: [38;5;48;1m0.001784347200000000[0;0m ETH
+
+[0;0m[90m====ACTIVATION====[0;0m
+Activating program at address [38;5;48;1m0x900F8688696561c7B92f3dACa3403101FD27bf00[0;0m
+Base fee: [0;0m[90m0.100000000[0;0m gwei
+Estimated gas for activation: [38;5;48;1m14244581[0;0m gas units
+Submitting activation tx...
+Confirmed activation tx [38;5;48;1m0x[0;0m[38;5;48;1mc66e170f4dae6b24f7ebd75d2bd12be449b5619cc2a4c21a375273bffd2398ee[0;0m
+Gas units used [38;5;48;1m14200363[0;0m, effective gas price [0;0m[90m0.100000000[0;0m gwei
+Transaction fee: [38;5;48;1m0.001420036300000000[0;0m ETH
+
