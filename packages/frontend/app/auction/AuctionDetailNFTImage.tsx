@@ -4,7 +4,11 @@ import CountDown from "../components/Countdown";
 import ReferenceLink from "../components/ReferenceLink";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { formatEther } from 'viem'
+import { formatEther, parseEther } from 'viem'
+import { useContractWrite } from "wagmi";
+import AuctionAbi from '../../../contract-stylus/output/auction.json';
+import AuctionAddress from '../../../contract-stylus/address.json'
+import { useParams } from "next/navigation";
 
 export default function AutionDetailNFTImage({ token, endtime, currentPrice, bidderBalance }: any) {
   const [tokenInfo, setTokenInfo] = useState<any>(null);
@@ -84,7 +88,7 @@ export default function AutionDetailNFTImage({ token, endtime, currentPrice, bid
             <p className="text-info-content text-base">Minimum bid</p>
             <p className="text-3xl">{currentPrice && formatEther(currentPrice as any)} ETH</p>
             <div className="flex gap-4 items-end">
-              <button className="btn btn-secondary w-60">Place bid</button>
+             <BidButton />
               <p className="text-xl">Your bid balance = {bidderBalance && formatEther(bidderBalance as any)} ETH</p>
             </div>
           </div>
@@ -98,21 +102,74 @@ export default function AutionDetailNFTImage({ token, endtime, currentPrice, bid
         </div>
       </div>
     </div>
-    // <div className='flex flex-col gap-3 justify-center items-center'>
-      // {token && token[1].result && tokenInfo && tokenInfo.image ? (
-      //   <img
-      //     className='h-40 w-full object-cover'
-      //     src={tokenInfo.image}
-      //     alt='nft image'
-      //   />
-      // ) : (
-      //   <div className='skeleton h-40 w-full'></div>
-      // )}
-    //   {token && token[1].result && tokenInfo && tokenInfo.image ? (
-    //     <div className='text-2xl'>{tokenInfo.name}</div>
-    //   ) : (
-    //     <div className='skeleton h-8 w-full'></div>
-    //   )}
-    // </div>
   );
+}
+
+const BidButton = () => {
+  const params = useParams<{ id: string }>()
+  const [inputBid, setInputBid] = useState(0)
+
+  const {
+    data: transactionHash,
+    isLoading: isLoading,
+    isSuccess: isSuccess,
+    write: triggerBidCall,
+  } = useContractWrite({
+    address: AuctionAddress.address as `0x${string}`,
+    abi: AuctionAbi as any,
+    functionName: 'placeBid',
+  });
+
+  const handleOpenModal = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    document.getElementById('bidButton').showModal()
+  }
+
+  const handleExecute = () => {
+    triggerBidCall({
+      args:[params?.id],
+      value: parseEther(inputBid.toString()) as any,
+    });
+  }
+
+  return(
+    <>
+      <button className="btn btn-primary w-60" onClick={() => handleOpenModal()}>Place bid</button>
+      <dialog id="bidButton" className="modal">
+        <div className='modal-box text-black'>
+          <form method='dialog'>
+            <button className='btn btn-sm btn-circle btn-ghost absolute right-2 top-2'>
+              ✕
+            </button>
+          </form>
+          <h3 className='font-bold text-lg'>Bid</h3>
+          <div className='grid grid-col-3 gap-4'>
+            <div className='form-control w-full'>
+              <label className='label'>
+                <span className='label-text'>To</span>
+              </label>
+              <input
+                onChange={(e) => setInputBid(Number(e.target.value))}
+                type='number'
+                placeholder='1'
+                className='input input-bordered w-full rounded-md z-10'
+              />
+            </div>
+          </div>
+          <div className='mt-8 flex flex-row-reverse'>
+            <button
+              onClick={() => handleExecute()}
+              className='btn btn-outline btn-primary rounded-sm text-lg w-32'
+            >
+              Bid
+            </button>
+          </div>
+        </div>
+        <form method='dialog' className='modal-backdrop'>
+          <button>close</button>
+        </form>
+      </dialog>
+    </>
+  )
 }
