@@ -16,6 +16,8 @@ interface IAuctionContract {
 
     function getCurrentPrice(uint256 auction_id) external view returns (uint256);
 
+    function getEndtimeAuction(uint256 auction_id) external view returns (uint256);
+
     function placeBid(uint256 auction_id) external payable;
 
     function endAuction(uint256 auction_id) external;

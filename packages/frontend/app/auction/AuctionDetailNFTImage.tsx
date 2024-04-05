@@ -1,9 +1,8 @@
 'use client'
 import Image from "next/image";
 import CountDown from "../components/Countdown";
-import ReferenceLink from "../components/ReferenceLink";
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatEther, parseEther } from 'viem'
 import { useContractWrite } from "wagmi";
 import AuctionAbi from '../../../contract-stylus/output/auction.json';
@@ -26,6 +25,16 @@ export default function AutionDetailNFTImage({ token, endtime, currentPrice, bid
 
     if (token && token[1].result) fetchData(token[1].result as any);
   }, [token]);
+
+  const isEnd = useMemo(() => {
+    let today = new Date()
+    if (
+      endtime &&
+      Number(endtime) < (today.getTime()-(today.getTime()%1000))/1000
+    )
+      return false;
+    else return true;
+  }, [endtime]);
 
   return (
     <div className="grid grid-cols-8 gap-4">
@@ -85,20 +94,25 @@ export default function AutionDetailNFTImage({ token, endtime, currentPrice, bid
           </div>
           <div className="divider"></div>
           <div className="flex flex-col gap-2">
-            <p className="text-info-content text-base">Minimum bid</p>
+            <p className="text-info-content text-base">Minimum bids</p>
             <p className="text-3xl">{currentPrice && formatEther(currentPrice as any)} ETH</p>
             <div className="flex gap-4 items-end">
-             <BidButton />
-              <p className="text-xl">Your bid balance = {bidderBalance && formatEther(bidderBalance as any)} ETH</p>
+            <BidButton />
             </div>
           </div>
         </div>
         <div className="bg-base-200 p-4">
           <p className="text-2xl uppercase">
-          Reference
+            Your bids
           </p>
           <div className="divider"></div>
-          <ReferenceLink text="https://layer3.xyz/quests/cubes-on-arbitrum?ref=taio-newgate.eth"/>
+          <div className="flex flex-col gap-2">
+            <p className="text-3xl">{bidderBalance && formatEther(bidderBalance as any)} ETH</p>
+            <div className="flex gap-4 items-end">
+              <WithdrawButton disabled={isEnd}/>
+            </div>
+          </div>
+          {/* <ReferenceLink text="https://layer3.xyz/quests/cubes-on-arbitrum?ref=taio-newgate.eth"/> */}
         </div>
       </div>
     </div>
@@ -170,6 +184,33 @@ const BidButton = () => {
           <button>close</button>
         </form>
       </dialog>
+    </>
+  )
+}
+
+const WithdrawButton = ({disabled}: any) => {
+  const params = useParams<{ id: string }>()
+
+  const {
+    data: transactionHash,
+    isLoading: isLoading,
+    isSuccess: isSuccess,
+    write: triggerWithdraw,
+  } = useContractWrite({
+    address: AuctionAddress.address as `0x${string}`,
+    abi: AuctionAbi as any,
+    functionName: 'withdraw',
+  });
+
+  const handleWithdraw = () => {
+    triggerWithdraw({
+      args:[params?.id],
+    });
+  }
+
+  return(
+    <>
+      <button className="btn btn-primary w-60" disabled={disabled} onClick={() => handleWithdraw()}>Withdraw</button>
     </>
   )
 }

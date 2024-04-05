@@ -17,6 +17,15 @@ use stylus_sdk::{
 //     error NotOwner();
 // }
 
+// Solidity interface for the NFT contract
+sol_interface! {
+    interface Erc721 {
+        function ownerOf(uint256 token_id) external returns(address);
+        function safeTransferFrom(address from, address to, uint256 token_id) external;
+        function transferFrom(address from, address to, uint256 token_id) external;
+    }
+}
+
 pub trait AuctionParams {
     const OWNER: &'static str;
 }
@@ -93,7 +102,6 @@ impl<T: AuctionParams> AuctionContract<T> {
             panic!("Not owner")
         }
 
-        // start price > 0
         let transfer_selector = function_selector!("safeTransferFrom(address,address,uint256)");
         let transfer_data = [
             &transfer_selector[..],
@@ -145,6 +153,11 @@ impl<T: AuctionParams> AuctionContract<T> {
         } else {
             Ok(binding.bidder.get(binding.highest_bidder.get()))
         }
+    }
+
+    pub fn get_endtime_auction(&self, auction_id: U256) -> Result< U256, Vec<u8>> {
+        let result = self.auctions.get(auction_id);
+        Ok(result.end_time.get())
     }
 
     #[payable]
@@ -216,6 +229,9 @@ impl<T: AuctionParams> AuctionContract<T> {
         &mut self,
         auction_id: U256,
     ) -> Result< (), Vec<u8>> {
+        if U256::from(block::timestamp()) <= self.auctions.get(auction_id).end_time.get() {
+            panic!("Auction have not end yet")
+        }
         let user_balance = self.auctions.setter(auction_id).bidder.get(msg::sender());
         if user_balance == U256::from(0) {
             panic!("Your balance is 0")
