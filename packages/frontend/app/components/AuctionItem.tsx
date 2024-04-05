@@ -3,14 +3,12 @@ import CountDown from "./Countdown";
 import Erc721Abi from '../../../contract-stylus/output/erc721.json';
 import AuctionAbi from '../../../contract-stylus/output/auction.json';
 import AuctionAddress from '../../../contract-stylus/address.json'
-import { useAccount, useContractReads, useContractWrite } from "wagmi";
+import { useContractReads } from "wagmi";
 import { useEffect } from "react";
 import { formatEther } from 'viem'
 import NFTImage from "./NFTImage";
 
 export default function AuctionItem({id}: {id:string}) {
-  const account = useAccount();
-  // Read token
   const { data: auctionInfo, refetch } = useContractReads({
     contracts: [
       {
@@ -37,12 +35,6 @@ export default function AuctionItem({id}: {id:string}) {
         functionName: 'getCurrentPrice',
         args: [id],
       },
-      {
-        address: AuctionAddress.address as `0x${string}`,
-        abi: AuctionAbi as any,
-        functionName: 'bidderBalance',
-        args: [id, account.address?.toLocaleLowerCase()],
-      }
     ],
   });
 
