@@ -1,6 +1,19 @@
+'use client'
 import AuctionItem from "../components/AuctionItem";
 
+import { useContractRead } from "wagmi";
+
+import AuctionAbi from '../../../contract-stylus/output/auction.json';
+import AuctionAddress from '../../../contract-stylus/address.json'
+
 export default function ExplorePage() {
+  // get auction
+  const { data: auction } = useContractRead({
+    address: AuctionAddress.address as `0x${string}`,
+    abi: AuctionAbi as any,
+    functionName: 'getAuctionId',
+  })
+
   return (
     <div className="bg-base-100">
       <div className="mx-8">
@@ -8,8 +21,8 @@ export default function ExplorePage() {
         <div className="divider"></div>
         <div className="grid grid-cols-4 gap-4">
           <div className="col-span-1 bg-base-200 min-h-[500px]">
-            <div className="collapse collapse-arrow bg-base-200">
-              <input type="checkbox" name="my-accordion-1" />
+            <div className="collapse collapse-arrow  bg-base-200">
+              <input type="checkbox" name="my-accordion-1" defaultChecked/>
               <div className="collapse-title text-xl font-medium">
                 <p className="text-xl uppercase">Price</p>
               </div>
@@ -32,7 +45,7 @@ export default function ExplorePage() {
             </div>
             <div className="divider"></div>
             <div className="collapse collapse-arrow bg-base-200">
-              <input type="checkbox" name="my-accordion-1" />
+              <input type="checkbox" name="my-accordion-1" defaultChecked/>
               <div className="collapse-title text-xl font-medium">
                 <p className="text-xl uppercase">Currency</p>
               </div>
@@ -48,9 +61,11 @@ export default function ExplorePage() {
           </div>
           <div className="col-span-3">
             <div className="grid grid-cols-4 gap-4 place-items-center">
-              {["1","2","3","4","5","6"].map(v =>(
-                <AuctionItem key={v} id={v}/>
-              ))}
+              {
+                auction && Array.from({ length: Number(auction) }, (_, index) => index).map(v =>(
+                  <AuctionItem key={v} id={v.toString()}/>
+                ))
+              }
             </div>
           </div>
         </div>

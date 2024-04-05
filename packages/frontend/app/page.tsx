@@ -5,8 +5,8 @@ import MainPage from "./components/MainPage";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "FlamePixel",
-    description: "We have 1 days to place pixel then we can claim it as NFT",
+    title: "Uranus",
+    description: "Best Auction platform",
     other: {
       ...(await fetchMetadata(
         new URL(

@@ -7,6 +7,7 @@ import Providers from './Provider';
 import { useContractRead, usePrepareContractWrite, useAccount, useContractWrite } from 'wagmi';
 import CountDown from './Countdown';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // import contractAddress from '../../../contracts/contract-address.json'
 // import contractAbi from '../../../contracts/artifacts/contracts/Board.sol/Board.json'
@@ -31,9 +32,9 @@ const Body = () => {
         <p className='text-3xl uppercase'>
           Start your own auction
         </p>
-        <div>
+        <Link href={"/explore"}>
           <button className="btn btn-outline btn-primary">{`Discover Auctions ->`}</button>
-        </div>
+        </Link>
       </div>
       <div className='col-span-2'>
         <div className='w-[500px] flex flex-col gap-4 rounded-lg border-solid border-8 border-primary p-8'>

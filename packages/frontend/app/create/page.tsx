@@ -1,5 +1,5 @@
 'use client'
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { isAddress, parseEther } from 'viem';
 import NFTImage from "../components/NFTImage";
 import { useAccount, useContractReads, useContractWrite } from "wagmi";
@@ -25,7 +25,7 @@ export default function CreatePage() {
   };
 
   // Read token
-  const { data: token } = useContractReads({
+  const { data: token, refetch } = useContractReads({
     contracts: [
       {
         address: tokenContract as `0x${string}`,
@@ -52,6 +52,16 @@ export default function CreatePage() {
       }
     ],
   });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refetch()
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const isOwner = useMemo(() => {
     if (

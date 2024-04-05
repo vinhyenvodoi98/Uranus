@@ -19,15 +19,20 @@ export default function NFTImage({ token }: { token: any }) {
   }, [token]);
 
   return (
-    <div className='h-40 flex justify-center items-center'>
+    <div className='flex flex-col gap-3 justify-center items-center'>
       {token && token[1].result && tokenInfo && tokenInfo.image ? (
         <img
-          className='h-40 object-cover'
+          className='h-40 w-full object-cover'
           src={tokenInfo.image}
           alt='nft image'
         />
       ) : (
-        <div className='skeleton h-32 w-full'></div>
+        <div className='skeleton h-40 w-full'></div>
+      )}
+      {token && token[1].result && tokenInfo && tokenInfo.image ? (
+        <div className='text-2xl'>{tokenInfo.name}</div>
+      ) : (
+        <div className='skeleton h-8 w-full'></div>
       )}
     </div>
   );
