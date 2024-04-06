@@ -229,16 +229,23 @@ impl<T: AuctionParams> AuctionContract<T> {
         &mut self,
         auction_id: U256,
     ) -> Result< (), Vec<u8>> {
-        if U256::from(block::timestamp()) <= self.auctions.get(auction_id).end_time.get() {
+        let mut binding = self.auctions.setter(auction_id);
+        // wait for auction end
+        if U256::from(block::timestamp()) <= binding.end_time.get() {
             panic!("Auction have not end yet")
         }
-        let user_balance = self.auctions.setter(auction_id).bidder.get(msg::sender());
+        let user_balance = binding.bidder.get(msg::sender());
         if user_balance == U256::from(0) {
             panic!("Your balance is 0")
         }
+        let highest_bidder = binding.highest_bidder.get();
+        // You are winner
+        if binding.highest_bidder.get() == msg::sender() && binding.bidder.get(highest_bidder) >= binding.expected_price.get() {
+            panic!("You are winner please wait owner end auction")
+        }
         // transfer eth
         transfer_eth(msg::sender(), user_balance)?;
-        self.auctions.setter(auction_id).bidder.setter(msg::sender()).set(U256::from(0));
+        binding.bidder.setter(msg::sender()).set(U256::from(0));
         Ok(())
     }
 
