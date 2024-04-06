@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { isAddress, parseEther } from 'viem';
 import NFTImage from "../components/NFTImage";
 import { useAccount, useContractReads, useContractWrite } from "wagmi";
+import { toast } from 'react-toastify';
 
 import Erc721Abi from '../../../contract-stylus/output/erc721.json';
 import AuctionAbi from '../../../contract-stylus/output/auction.json';
@@ -96,15 +97,24 @@ export default function CreatePage() {
   }, [isOwner, minBid, reserverPrice]);
 
   const {
-    // data: transactionHash,
+    data: approveTransactionHash,
     // isLoading: isLoading,
-    // isSuccess: isSuccess,
+    isSuccess: isApproveSuccess,
     write: triggerApprove
   } = useContractWrite({
     address: tokenContract as `0x${string}`,
     abi: Erc721Abi as any,
     functionName: 'approve',
   });
+
+  useEffect(() => {
+    if (isApproveSuccess) {
+      toast.success(
+        `Transaction has been created successfully:
+        ${approveTransactionHash?.hash}`
+      );
+    }
+  }, [isApproveSuccess]);
 
   const approve = () => {
     triggerApprove({
@@ -117,7 +127,7 @@ export default function CreatePage() {
 
   const {
     data: transactionHash,
-    isLoading: isLoading,
+    // isLoading: isLoading,
     isSuccess: isSuccess,
     write: triggerStartAuction
   } = useContractWrite({
@@ -125,6 +135,15 @@ export default function CreatePage() {
     abi: AuctionAbi as any,
     functionName: 'startAuction',
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(
+        `Transaction has been created successfully:
+        ${transactionHash?.hash}`
+      );
+    }
+  }, [isSuccess]);
 
   const startAuction = () => {
     let today = new Date()

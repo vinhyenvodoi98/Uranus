@@ -8,6 +8,7 @@ import { useContractWrite } from "wagmi";
 import AuctionAbi from '../../../contract-stylus/output/auction.json';
 import AuctionAddress from '../../../contract-stylus/address.json'
 import { useParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function AutionDetailNFTImage({ token, endtime, currentPrice, bidderBalance }: any) {
   const [tokenInfo, setTokenInfo] = useState<any>(null);
@@ -125,7 +126,7 @@ const BidButton = () => {
 
   const {
     data: transactionHash,
-    isLoading: isLoading,
+    // isLoading: isLoading,
     isSuccess: isSuccess,
     write: triggerBidCall,
   } = useContractWrite({
@@ -133,6 +134,15 @@ const BidButton = () => {
     abi: AuctionAbi as any,
     functionName: 'placeBid',
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(
+        `Transaction has been created successfully:
+        ${transactionHash?.hash}`
+      );
+    }
+  }, [isSuccess]);
 
   const handleOpenModal = () => {
     // eslint-disable-next-line
@@ -193,7 +203,7 @@ const WithdrawButton = ({disabled}: any) => {
 
   const {
     data: transactionHash,
-    isLoading: isLoading,
+    // isLoading: isLoading,
     isSuccess: isSuccess,
     write: triggerWithdraw,
   } = useContractWrite({
@@ -201,6 +211,15 @@ const WithdrawButton = ({disabled}: any) => {
     abi: AuctionAbi as any,
     functionName: 'withdraw',
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(
+        `Transaction has been created successfully:
+        ${transactionHash?.hash}`
+      );
+    }
+  }, [isSuccess]);
 
   const handleWithdraw = () => {
     triggerWithdraw({
