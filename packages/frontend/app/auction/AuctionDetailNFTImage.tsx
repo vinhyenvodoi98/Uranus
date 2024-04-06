@@ -135,7 +135,7 @@ const BidButton = () => {
   });
 
   const handleOpenModal = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // eslint-disable-next-line
     // @ts-ignore
     document.getElementById('bidButton').showModal()
   }
